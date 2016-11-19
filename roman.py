@@ -219,12 +219,14 @@ class Roman(object):
     
     def __add__(self, other):
         self._valid_for_arithmetic(other)
-        return Roman(int_to_roman(self.value + int(other)),
+        return Roman(int_to_roman(self.value + int(other),
+                                  subtr_notation=self.subtractive_notation),
                      subtractive_notation=self.subtractive_notation)
 
     def __radd__(self, other):
         self._valid_for_arithmetic(other)
-        return Roman(int_to_roman(int(other) + self.value),
+        return Roman(int_to_roman(int(other) + self.value,
+                                  subtr_notation=self.subtractive_notation),
                      subtractive_notation=self.subtractive_notation)
 
     def __iadd__(self, other):
@@ -232,12 +234,14 @@ class Roman(object):
 
     def __sub__(self, other):
         self._valid_for_arithmetic(other)
-        return Roman(int_to_roman(self.value - int(other)), 
+        return Roman(int_to_roman(self.value - int(other),
+                                  subtr_notation=self.subtractive_notation),
                      subtractive_notation=self.subtractive_notation)
 
     def __rsub__(self, other):
         self._valid_for_arithmetic(other)
-        return Roman(int_to_roman(int(other) - self.value),
+        return Roman(int_to_roman(int(other) - self.value,
+                                  subtr_notation=self.subtractive_notation),
                      subtractive_notation=self.subtractive_notation)
 
     def __isub__(self, other):
@@ -245,12 +249,14 @@ class Roman(object):
 
     def __mul__(self, other):
         self._valid_for_arithmetic(other)
-        return Roman(int_to_roman(self.value * int(other)), 
+        return Roman(int_to_roman(self.value * int(other),
+                                  subtr_notation=self.subtractive_notation),
                      subtractive_notation=self.subtractive_notation)
 
     def __rmul__(self, other):
         self._valid_for_arithmetic(other)
-        return Roman(int_to_roman(int(other) * self.value),
+        return Roman(int_to_roman(int(other) * self.value,
+                                  subtr_notation=self.subtractive_notation),
                      subtractive_notation=self.subtractive_notation)
 
     def __imul__(self, other):
@@ -258,12 +264,14 @@ class Roman(object):
 
     def __floordiv__(self, other):
         self._valid_for_arithmetic(other)
-        return Roman(int_to_roman(self.value // int(other)), 
+        return Roman(int_to_roman(self.value // int(other),
+                                  subtr_notation=self.subtractive_notation),
                      subtractive_notation=self.subtractive_notation)
 
     def __rfloordiv__(self, other):
         self._valid_for_arithmetic(other)
-        return Roman(int_to_roman(int(other) // self.value),
+        return Roman(int_to_roman(int(other) // self.value,
+                                  subtr_notation=self.subtractive_notation),
                      subtractive_notation=self.subtractive_notation)
 
     def __ifloordiv__(self, other):
@@ -282,12 +290,14 @@ class Roman(object):
 
     def __mod__(self, other):
         self._valid_for_arithmetic(other)
-        return Roman(int_to_roman(self.value % int(other)), 
+        return Roman(int_to_roman(self.value % int(other),
+                                  subtr_notation=self.subtractive_notation),
                      subtractive_notation=self.subtractive_notation)
 
     def __rmod__(self, other):
         self._valid_for_arithmetic(other)
-        return Roman(int_to_roman(int(other) % self.value),
+        return Roman(int_to_roman(int(other) % self.value,
+                                  subtr_notation=self.subtractive_notation),
                      subtractive_notation=self.subtractive_notation)
 
     def __imod__(self, other):
@@ -296,27 +306,33 @@ class Roman(object):
     def __divmod__(self, other):
         self._valid_for_arithmetic(other)
         result = divmod(self.value, int(other))
-        return (Roman(int_to_roman(result[0]), 
+        return (Roman(int_to_roman(result[0],
+                                   subtr_notation=self.subtractive_notation),
                       subtractive_notation=self.subtractive_notation),
-                Roman(int_to_roman(result[1]), 
+                Roman(int_to_roman(result[1],
+                                   subtr_notation=self.subtractive_notation),
                       subtractive_notation=self.subtractive_notation))
 
     def __rdivmod__(self, other):
         self._valid_for_arithmetic(other)
         result = divmod(int(other), self.value)
-        return (Roman(int_to_roman(result[0]),
+        return (Roman(int_to_roman(result[0],
+                                   subtr_notation=self.subtractive_notation),
                       subtractive_notation=self.subtractive_notation),
-                Roman(int_to_roman(result[1]),
+                Roman(int_to_roman(result[1],
+                                   subtr_notation=self.subtractive_notation),
                       subtractive_notation=self.subtractive_notation))
 
     def __pow__(self, other):
         self._valid_for_arithmetic(other)
-        return Roman(int_to_roman(self.value ** int(other)),
+        return Roman(int_to_roman(self.value ** int(other),
+                                  subtr_notation=self.subtractive_notation),
                      subtractive_notation=self.subtractive_notation)
 
     def __rpow__(self, other):
         self._valid_for_arithmetic(other)
-        return Roman(int_to_roman(int(other) ** self.value),
+        return Roman(int_to_roman(int(other) ** self.value,
+                                  subtr_notation=self.subtractive_notation),
                      subtractive_notation=self.subtractive_notation)
 
     def __ipow__(self, other):
@@ -393,7 +409,7 @@ class Roman(object):
                     modifier = 0
                 try:
                     if (token_index[previous_token]+modifier >
-                        token_index[present_token]):
+                            token_index[present_token]):
                         return False
                 except KeyError:
                     pass
@@ -450,6 +466,9 @@ def int_to_roman(integer:int, subtr_notation:bool=True,
     >>> r2.value
     269
     """
+
+    if int(integer) != integer:
+        raise ValueError("Invalid value for conversion: {}".format(integer))
     roman = ''
     if integer < 0:
         if accept_negative:
