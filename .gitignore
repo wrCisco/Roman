@@ -1,5 +1,6 @@
 *~
 .idea/*
+__pycache__
 
 # From https://gist.github.com/octocat/9257657
 # Compiled source #
