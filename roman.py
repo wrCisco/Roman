@@ -106,6 +106,12 @@ class Roman(object):
         'VII'
         >>> div_[1].numeral # remainder
         'XXXIV'
+
+        Comparisons can be made with instances of classes that support
+        the float method.
+
+        >>> r3 >= 349.5
+        False
         """
 
         self._numeral = None
@@ -184,6 +190,12 @@ class Roman(object):
     def subtractive_notation(self):
         raise AttributeError("Subtractive_notation attribute "
                              "must not be deleted.")
+
+    def _valid_for_arithmetic(self, other):
+        if isinstance(other, self.__class__) or other == int(other):
+            return True
+        raise ValueError("Operand must be a Roman instance or be "
+                         "equal to its integer value.")
     
     def __repr__(self):
         class_str = str(self.__class__)
@@ -201,12 +213,17 @@ class Roman(object):
 
     def __int__(self):
         return self.value
+
+    def __float__(self):
+        return float(self.value)
     
     def __add__(self, other):
+        self._valid_for_arithmetic(other)
         return Roman(int_to_roman(self.value + int(other)),
                      subtractive_notation=self.subtractive_notation)
 
     def __radd__(self, other):
+        self._valid_for_arithmetic(other)
         return Roman(int_to_roman(int(other) + self.value),
                      subtractive_notation=self.subtractive_notation)
 
@@ -214,10 +231,12 @@ class Roman(object):
         return self + other
 
     def __sub__(self, other):
+        self._valid_for_arithmetic(other)
         return Roman(int_to_roman(self.value - int(other)), 
                      subtractive_notation=self.subtractive_notation)
 
     def __rsub__(self, other):
+        self._valid_for_arithmetic(other)
         return Roman(int_to_roman(int(other) - self.value),
                      subtractive_notation=self.subtractive_notation)
 
@@ -225,10 +244,12 @@ class Roman(object):
         return self - other
 
     def __mul__(self, other):
+        self._valid_for_arithmetic(other)
         return Roman(int_to_roman(self.value * int(other)), 
                      subtractive_notation=self.subtractive_notation)
 
     def __rmul__(self, other):
+        self._valid_for_arithmetic(other)
         return Roman(int_to_roman(int(other) * self.value),
                      subtractive_notation=self.subtractive_notation)
 
@@ -236,10 +257,12 @@ class Roman(object):
         return self * other
 
     def __floordiv__(self, other):
+        self._valid_for_arithmetic(other)
         return Roman(int_to_roman(self.value // int(other)), 
                      subtractive_notation=self.subtractive_notation)
 
     def __rfloordiv__(self, other):
+        self._valid_for_arithmetic(other)
         return Roman(int_to_roman(int(other) // self.value),
                      subtractive_notation=self.subtractive_notation)
 
@@ -247,19 +270,23 @@ class Roman(object):
         return self // other
 
     def __truediv__(self, other):
+        self._valid_for_arithmetic(other)
         return self.__divmod__(other)
 
     def __rtruediv__(self, other):
+        self._valid_for_arithmetic(other)
         return self.__rdivmod__(other)
 
     def __itruediv__(self, other):
         return self.__divmod__(other)
 
     def __mod__(self, other):
+        self._valid_for_arithmetic(other)
         return Roman(int_to_roman(self.value % int(other)), 
                      subtractive_notation=self.subtractive_notation)
 
     def __rmod__(self, other):
+        self._valid_for_arithmetic(other)
         return Roman(int_to_roman(int(other) % self.value),
                      subtractive_notation=self.subtractive_notation)
 
@@ -267,6 +294,7 @@ class Roman(object):
         return self % other
 
     def __divmod__(self, other):
+        self._valid_for_arithmetic(other)
         result = divmod(self.value, int(other))
         return (Roman(int_to_roman(result[0]), 
                       subtractive_notation=self.subtractive_notation),
@@ -274,6 +302,7 @@ class Roman(object):
                       subtractive_notation=self.subtractive_notation))
 
     def __rdivmod__(self, other):
+        self._valid_for_arithmetic(other)
         result = divmod(int(other), self.value)
         return (Roman(int_to_roman(result[0]),
                       subtractive_notation=self.subtractive_notation),
@@ -281,10 +310,12 @@ class Roman(object):
                       subtractive_notation=self.subtractive_notation))
 
     def __pow__(self, other):
+        self._valid_for_arithmetic(other)
         return Roman(int_to_roman(self.value ** int(other)),
                      subtractive_notation=self.subtractive_notation)
 
     def __rpow__(self, other):
+        self._valid_for_arithmetic(other)
         return Roman(int_to_roman(int(other) ** self.value),
                      subtractive_notation=self.subtractive_notation)
 
@@ -295,22 +326,22 @@ class Roman(object):
         return self
 
     def __eq__(self, other):
-        return self.value == int(other)
+        return self.value == float(other)
 
     def __ne__(self, other):
-        return self.value != int(other)
+        return self.value != float(other)
 
     def __lt__(self, other):
-        return self.value < int(other)
+        return self.value < float(other)
     
     def __le__(self, other):
-        return self.value <= int(other)
+        return self.value <= float(other)
 
     def __gt__(self, other):
-        return self.value > int(other)
+        return self.value > float(other)
 
     def __ge__(self, other):
-        return self.value >= int(other)
+        return self.value >= float(other)
 
     def roman_to_int(self):
         """
