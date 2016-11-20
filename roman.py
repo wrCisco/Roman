@@ -32,6 +32,16 @@ from collections import OrderedDict
 
 
 class Roman(object):
+    """
+    Class of roman numerals. See Roman.__init__ method for
+    further details.
+    """
+
+    # if Roman.arithmetic_mode == "strict", arithmetic operations are allowed
+    # only between Roman instances. Otherwise (suggested value: "tolerant")
+    # they are possible with other numeric types whose integer part is
+    # equal to their total value.
+    arithmetic_mode = "tolerant"
 
     tokens = OrderedDict([
         ('I', {'value': 1, 'subtractives': ('IV', 'IX')}),
@@ -192,10 +202,13 @@ class Roman(object):
                              "must not be deleted.")
 
     def _valid_for_arithmetic(self, other):
-        if isinstance(other, self.__class__) or other == int(other):
+        if isinstance(other, self.__class__) or \
+                (Roman.arithmetic_mode != "strict" and other == int(other)):
             return True
-        raise ValueError("Operand must be a Roman instance or be "
-                         "equal to its integer value.")
+        raise ValueError("Operand must be a Roman instance or, if "
+                         "Roman.arithmetic_mode (class attribute) "
+                         "is different from 'strict', "
+                         "must be equal to its integer value.")
     
     def __repr__(self):
         class_str = str(self.__class__)
