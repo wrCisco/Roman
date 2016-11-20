@@ -131,13 +131,13 @@ class Roman(object):
         for index, char in enumerate(self.numeral):
             if char not in Roman.tokens.keys():
                 raise ValueError('{} at position {} is not a valid '
-                                 'roman numeral.\n'.format(char, index))
+                                 'roman numeral.'.format(char, index))
         self.check = check
-        self.check_validity(self.check)
+        self._check_validity(self.check)
         self._value = None
         self.value = self.roman_to_int()
 
-    def check_validity(self, check):
+    def _check_validity(self, check:bool):
         self.is_valid = self._is_valid_roman()
         if check and not self.is_valid:
             raise ValueError('{} is not a valid roman '
@@ -207,8 +207,8 @@ class Roman(object):
             return True
         raise ValueError("Operand must be a Roman instance or, if "
                          "Roman.arithmetic_mode (class attribute) "
-                         "is different from 'strict', "
-                         "must be equal to its integer value.")
+                         "is not 'strict', must be equal to its "
+                         "integer value.")
     
     def __repr__(self):
         class_str = str(self.__class__)
@@ -433,7 +433,8 @@ class Roman(object):
         """
         Get the next token (one or two characters) of the roman numeral 
         during parsing and associate to it the maximum number of times
-        that the token can appear in sequence. 
+        that the token can appear in sequence. If token's length is two
+        characters, skip_next_char will be set to True.
         """
         skip_next_char = False
         present_token = char
