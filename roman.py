@@ -33,7 +33,6 @@ from collections import OrderedDict
 
 class Roman(object):
     """
-<<<<<<< HEAD
     Class of roman numerals. See Roman.__init__ method for
     further details.
     """
