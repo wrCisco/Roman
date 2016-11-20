@@ -33,6 +33,7 @@ from collections import OrderedDict
 
 class Roman(object):
     """
+<<<<<<< HEAD
     Class of roman numerals. See Roman.__init__ method for
     further details.
     """
@@ -97,7 +98,7 @@ class Roman(object):
         >>> r3.numeral
         'CCCXLIX'
 
-        Roman instances support many fundamental arithmetic operations
+        Roman instances support many fundamental arithmetic_mode operations
         between non negative integers. The result is another instance of the
         Roman class (whose subtractive_notation attribute value is equal to
         that of the left member of the operation). Subtractions are allowed 
