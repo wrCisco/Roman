@@ -97,7 +97,7 @@ class Roman(object):
         >>> r3.numeral
         'CCCXLIX'
 
-        Roman instances support many fundamental arithmetic_mode operations
+        Roman instances support many fundamental arithmetic operations
         between non negative integers. The result is another instance of the
         Roman class (whose subtractive_notation attribute value is equal to
         that of the left member of the operation). Subtractions are allowed 
@@ -118,7 +118,7 @@ class Roman(object):
         'XXXIV'
 
         Comparisons can be made with instances of classes that support
-        the float method.
+        the __float__ method.
 
         >>> r3 >= 349.5
         False
