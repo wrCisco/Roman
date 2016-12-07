@@ -490,15 +490,13 @@ def int_to_roman(integer:int, subtr_notation:bool=True,
             integer = abs(integer)
         else:
             raise ValueError("Negative integers not allowed.")
-    while integer > 0:
-        for rom_val in reversed(Roman.tokens.keys()):
-            if len(rom_val) == 2 and not subtr_notation:
-                continue
-            int_val = Roman.tokens[rom_val]['value']
-            if integer >= int_val:
-                roman += rom_val
-                integer -= int_val
-                break
+    for rom_val in reversed(Roman.tokens.keys()):
+        if len(rom_val) == 2 and not subtr_notation:
+            continue
+        int_val = Roman.tokens[rom_val]['value']
+        while integer >= int_val:
+            roman += rom_val
+            integer -= int_val
     return roman
 
 
