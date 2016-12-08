@@ -24,7 +24,7 @@
 # SOFTWARE.
 
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Francesco Martini"
 
 
