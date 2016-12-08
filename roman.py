@@ -29,6 +29,7 @@ __author__ = "Francesco Martini"
 
 
 from collections import OrderedDict
+import re
 
 
 class Roman(object):
@@ -122,18 +123,32 @@ class Roman(object):
 
         >>> r3 >= 349.5
         False
+
+        For large numbers (>= 10000) an exponential notation (sort of) is used:
+        the numeral will begin with an 'M' followed by an integer (in curly
+        braces and preceded by an asterisk), that represents the number
+        of times the 'M' was due to appear in regular notation.
+
+        >>> r4 = Roman(int_to_roman(3107712528315038139))
+        >>> r4.numeral
+        'M{*3107712528315038}CXXXIX'
+        >>> r5 = Roman('M{*65433}DCX')
+        >>> r5.value
+        65433610
         """
 
         self._numeral = None
         self.numeral = numeral.upper()
         self._subtractive_notation = None
         self.subtractive_notation = subtractive_notation
-        for index, char in enumerate(self.numeral):
+
+        self.numeral_check = re.sub(r"^M\{\*\d+\}", "", self.numeral)
+        for index, char in enumerate(self.numeral_check):
             if char not in Roman.tokens.keys():
                 raise ValueError('{} at position {} is not a valid '
                                  'roman numeral.'.format(char, index))
-        self.check = check
-        self._check_validity(self.check)
+
+        self._check_validity(check)
         self._value = None
         self.value = self.roman_to_int()
 
@@ -150,7 +165,12 @@ class Roman(object):
     @numeral.setter
     def numeral(self, numeral:str):
         if self._numeral is None:
-            self._numeral = numeral.upper()
+            numeral = numeral.upper()
+            if re.match(r"M{10,}", numeral):
+                m_int = len(re.match(r"(M{10,})", numeral).group())
+                self._numeral = "M{{*{}}}{}".format(m_int, numeral[m_int:])
+            else:
+                self._numeral = numeral.upper()
         else:
             old_value = self.value
             old_numeral = self._numeral
@@ -380,7 +400,13 @@ class Roman(object):
         """
         integer = 0
         skip_next_char = False
-        for index, char in enumerate(self.numeral):
+        if self.numeral.startswith("M{*"):
+            end_int = self.numeral.index("}")
+            integer += 1000*int(self.numeral[3:end_int])
+            numeral = self.numeral[end_int+1:]
+        else:
+            numeral = self.numeral
+        for index, char in enumerate(numeral):
             if skip_next_char:
                 skip_next_char = False
                 continue
@@ -399,7 +425,7 @@ class Roman(object):
         skip_next_char = False
         token_index = {k:i for i,k in enumerate(reversed(Roman.tokens.keys()))}
 
-        for index, char in enumerate(self.numeral):
+        for index, char in enumerate(self.numeral_check):
             if skip_next_char:
                 skip_next_char = False
                 continue
@@ -443,7 +469,7 @@ class Roman(object):
             if self.subtractive_notation:
                 max_rep = 2
                 try:
-                    next_char = self.numeral[index+1]
+                    next_char = self.numeral_check[index + 1]
                 except IndexError:
                     pass
                 else:
@@ -490,7 +516,7 @@ def int_to_roman(integer:int, subtr_notation:bool=True,
             integer = abs(integer)
         else:
             raise ValueError("Negative integers not allowed.")
-    if integer > 10000:
+    if integer >= 10000:
         roman += 'M{{*{}}}'.format(integer//1000)
         integer -= (integer//1000)*1000
     for rom_val in reversed(Roman.tokens.keys()):
