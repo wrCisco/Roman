@@ -124,7 +124,7 @@ class Roman(object):
         >>> r3 >= 349.5
         False
 
-        For large numbers (>= 10000) an exponential notation (sort of) is used:
+        For large numbers (>= 10000) a 'number of thousands' notation is used:
         the numeral will begin with an 'M' followed by an integer (in curly
         braces and preceded by an asterisk), that represents the number
         of times the 'M' was due to appear in regular notation.
