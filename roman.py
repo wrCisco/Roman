@@ -490,6 +490,9 @@ def int_to_roman(integer:int, subtr_notation:bool=True,
             integer = abs(integer)
         else:
             raise ValueError("Negative integers not allowed.")
+    if integer > 10000:
+        roman += 'M{{*{}}}'.format(integer//1000)
+        integer -= (integer//1000)*1000
     for rom_val in reversed(Roman.tokens.keys()):
         if len(rom_val) == 2 and not subtr_notation:
             continue
